@@ -1,6 +1,6 @@
 #pragma once
 
-#include "kulikov_d_mult_matr_crs/include/ops_seq.hpp"
+#include "kulikov_d_mult_matr_crs/common/include/common.hpp"
 #include "task/include/task.hpp"
 
 namespace kulikov_d_mult_matr_crs {
