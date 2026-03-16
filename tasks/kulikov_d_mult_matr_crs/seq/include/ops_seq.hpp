@@ -1,6 +1,6 @@
 #pragma once
 
-#include "example_threads/common/include/common.hpp"
+#include "kulikov_d_mult_matr_crs/include/ops_seq.hpp"
 #include "task/include/task.hpp"
 
 namespace kulikov_d_mult_matr_crs {
@@ -10,6 +10,7 @@ class KulikovDMultMatrCrsSEQ : public BaseTask {
   static constexpr ppc::task::TypeOfTask GetStaticTypeOfTask() {
     return ppc::task::TypeOfTask::kSEQ;
   }
+
   explicit KulikovDMultMatrCrsSEQ(const InType &in);
 
  private:
@@ -17,6 +18,9 @@ class KulikovDMultMatrCrsSEQ : public BaseTask {
   bool PreProcessingImpl() override;
   bool RunImpl() override;
   bool PostProcessingImpl() override;
+
+  CRSMatrix MultiplyCRS(const CRSMatrix& A, const CRSMatrix& B);
+  bool IsCRSValid(const CRSMatrix& mat);
 };
 
 }  // namespace kulikov_d_mult_matr_crs
