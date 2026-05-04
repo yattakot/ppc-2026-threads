@@ -9,9 +9,9 @@
 namespace kulikov_d_mult_matr_crs {
 
 struct CRSMatrix {
-  int rows;                    // количество строк
-  int cols;                    // количество столбцов
-  int nnz;                     // количество ненулевых элементов
+  int rows{0};                 // количество строк
+  int cols{0};                 // количество столбцов
+  int nnz{0};                  // количество ненулевых элементов
   std::vector<double> values;  // ненулевые значения
   std::vector<int> col_ind;    // индексы столбцов
   std::vector<int> row_ptr;    // указатели на строки

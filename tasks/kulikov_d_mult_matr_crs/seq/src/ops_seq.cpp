@@ -5,7 +5,6 @@
 #include <unordered_map>
 
 #include "kulikov_d_mult_matr_crs/common/include/common.hpp"
-#include "util/include/util.hpp"
 
 namespace kulikov_d_mult_matr_crs {
 
