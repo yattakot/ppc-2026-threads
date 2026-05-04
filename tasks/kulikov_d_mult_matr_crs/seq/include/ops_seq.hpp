@@ -19,8 +19,8 @@ class KulikovDMultMatrCrsSEQ : public BaseTask {
   bool RunImpl() override;
   bool PostProcessingImpl() override;
 
-  CRSMatrix MultiplyCRS(const CRSMatrix& A, const CRSMatrix& B);
-  bool IsCRSValid(const CRSMatrix& mat);
+  CRSMatrix MultiplyCRS(const CRSMatrix &A, const CRSMatrix &B);
+  bool IsCRSValid(const CRSMatrix &mat);
 };
 
 }  // namespace kulikov_d_mult_matr_crs

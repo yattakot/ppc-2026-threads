@@ -1,8 +1,8 @@
 #include "kulikov_d_mult_matr_crs/seq/include/ops_seq.hpp"
 
-#include <unordered_map>
 #include <algorithm>
 #include <cmath>
+#include <unordered_map>
 
 #include "kulikov_d_mult_matr_crs/common/include/common.hpp"
 #include "util/include/util.hpp"
@@ -16,10 +16,9 @@ KulikovDMultMatrCrsSEQ::KulikovDMultMatrCrsSEQ(const InType &in) {
 }
 
 bool KulikovDMultMatrCrsSEQ::ValidationImpl() {
-  const auto& [matA, matB] = GetInput();
+  const auto &[matA, matB] = GetInput();
 
-  if (matA.nnz != static_cast<int>(matA.values.size()) ||
-      matB.nnz != static_cast<int>(matB.values.size())) {
+  if (matA.nnz != static_cast<int>(matA.values.size()) || matB.nnz != static_cast<int>(matB.values.size())) {
     return false;
   }
 
@@ -39,7 +38,7 @@ bool KulikovDMultMatrCrsSEQ::PreProcessingImpl() {
 }
 
 bool KulikovDMultMatrCrsSEQ::RunImpl() {
-  const auto& [matA, matB] = GetInput();
+  const auto &[matA, matB] = GetInput();
 
   try {
     GetOutput() = MultiplyCRS(matA, matB);
@@ -51,31 +50,46 @@ bool KulikovDMultMatrCrsSEQ::RunImpl() {
 }
 
 bool KulikovDMultMatrCrsSEQ::PostProcessingImpl() {
-  const auto& result = GetOutput();
+  const auto &result = GetOutput();
   return result.row_ptr.size() == static_cast<size_t>(result.rows + 1);
 }
 
-bool KulikovDMultMatrCrsSEQ::IsCRSValid(const CRSMatrix& mat) {
-  if (mat.rows < 0 || mat.cols < 0 || mat.nnz < 0) return false;
-  if (mat.row_ptr.size() != static_cast<size_t>(mat.rows + 1)) return false;
-  if (mat.values.size() != static_cast<size_t>(mat.nnz)) return false;
-  if (mat.col_ind.size() != static_cast<size_t>(mat.nnz)) return false;
-  if (mat.row_ptr[0] != 0) return false;
-  if (mat.row_ptr.back() != mat.nnz) return false;
+bool KulikovDMultMatrCrsSEQ::IsCRSValid(const CRSMatrix &mat) {
+  if (mat.rows < 0 || mat.cols < 0 || mat.nnz < 0) {
+    return false;
+  }
+  if (mat.row_ptr.size() != static_cast<size_t>(mat.rows + 1)) {
+    return false;
+  }
+  if (mat.values.size() != static_cast<size_t>(mat.nnz)) {
+    return false;
+  }
+  if (mat.col_ind.size() != static_cast<size_t>(mat.nnz)) {
+    return false;
+  }
+  if (mat.row_ptr[0] != 0) {
+    return false;
+  }
+  if (mat.row_ptr.back() != mat.nnz) {
+    return false;
+  }
 
   for (int i = 1; i <= mat.rows; ++i) {
-    if (mat.row_ptr[i] < mat.row_ptr[i-1]) return false;
+    if (mat.row_ptr[i] < mat.row_ptr[i - 1]) {
+      return false;
+    }
   }
 
   for (int col : mat.col_ind) {
-    if (col < 0 || col >= mat.cols) return false;
+    if (col < 0 || col >= mat.cols) {
+      return false;
+    }
   }
 
   return true;
 }
 
-CRSMatrix KulikovDMultMatrCrsSEQ::MultiplyCRS(const CRSMatrix& A,
-                                               const CRSMatrix& B) {
+CRSMatrix KulikovDMultMatrCrsSEQ::MultiplyCRS(const CRSMatrix &A, const CRSMatrix &B) {
   CRSMatrix C;
   C.rows = A.rows;
   C.cols = B.cols;
@@ -97,16 +111,15 @@ CRSMatrix KulikovDMultMatrCrsSEQ::MultiplyCRS(const CRSMatrix& A,
     }
 
     std::vector<std::pair<int, double>> sorted_elems;
-    for (const auto& [col, val] : row_accum) {
+    for (const auto &[col, val] : row_accum) {
       if (std::abs(val) > 1e-15) {
         sorted_elems.emplace_back(col, val);
       }
     }
 
-    std::sort(sorted_elems.begin(), sorted_elems.end(),
-              [](const auto& a, const auto& b) { return a.first < b.first; });
+    std::sort(sorted_elems.begin(), sorted_elems.end(), [](const auto &a, const auto &b) { return a.first < b.first; });
 
-    for (const auto& [col, val] : sorted_elems) {
+    for (const auto &[col, val] : sorted_elems) {
       C.col_ind.push_back(col);
       C.values.push_back(val);
     }
